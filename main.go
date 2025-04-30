@@ -39,6 +39,9 @@ func maximum(data []int) int {
 
 // maxChunks returns the maximum number of elements in a chunks.
 func maxChunks(data []int) int {
+	if len(data) <= 0 {
+		return 0
+	}
 	wg.Add(CHUNKS)
 	lenOfSlices := len(data) / CHUNKS
 	shift := len(data) - lenOfSlices*CHUNKS

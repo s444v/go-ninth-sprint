@@ -1,6 +1,7 @@
 package main
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,5 +42,26 @@ func TestMaximum(t *testing.T) {
 	}
 	for _, v := range testsOk {
 		assert.Equal(t, v.answer, maximum(v.array))
+	}
+}
+
+func TestMaxChunk(t *testing.T) {
+	for i := 1000; i <= 100_000_000; i = i * 10 {
+		array := generateRandomElements(i)
+		assert.Equal(t, maxChunks(array), slices.Max(array))
+	}
+	testsOk := []struct {
+		array  []int
+		answer int
+	}{
+		{nil, 0},
+		{[]int{}, 0},
+		{[]int{234}, 234},
+		{[]int{0, 0, 0}, 0},
+		{[]int{-1, -5, -3}, -1},
+		{[]int{11, 5, 7, 9}, 11},
+	}
+	for _, v := range testsOk {
+		assert.Equal(t, v.answer, maxChunks(v.array))
 	}
 }
