@@ -1,7 +1,6 @@
 package main
 
 import (
-	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,20 +8,23 @@ import (
 
 // Пишите тесты в этом файле
 func TestGenerateRandomElements(t *testing.T) {
-	testsOk := []struct {
+	tests := []struct {
 		actLen int
 		expLen int
+		isNil  bool
 	}{
-		{1, 1},
-		{3, 3},
-		{101, 101},
+		{1, 1, false},
+		{3, 3, false},
+		{5, 5, false},
+		{0, 0, true},
+		{-1, 0, true},
 	}
-	for _, v := range testsOk {
-		assert.Equal(t, v.expLen, len(generateRandomElements(v.actLen)))
-	}
-	assert.Nil(t, generateRandomElements(0))
-	assert.Nil(t, generateRandomElements(-1))
+	for _, v := range tests {
+		array := generateRandomElements(v.actLen)
+		assert.Equal(t, v.expLen, len(array))
+		assert.Equal(t, v.isNil, array == nil)
 
+	}
 }
 
 func TestMaximum(t *testing.T) {
@@ -30,8 +32,8 @@ func TestMaximum(t *testing.T) {
 		array  []int
 		answer int
 	}{
-		{nil, math.MinInt},
-		{[]int{}, math.MinInt},
+		{nil, 0},
+		{[]int{}, 0},
 		{[]int{234}, 234},
 		{[]int{0, 0, 0}, 0},
 		{[]int{-1, -5, -3}, -1},

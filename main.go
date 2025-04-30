@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"slices"
 	"sync"
 	"time"
 )
@@ -30,27 +31,27 @@ func generateRandomElements(size int) []int {
 
 // maximum returns the maximum number of elements.
 func maximum(data []int) int {
-	max := math.MinInt
-	for _, v := range data {
-		if v > max {
-			max = v
-		}
+	if len(data) <= 0 {
+		return 0
 	}
-	return max
+	return slices.Max(data)
 }
 
 // maxChunks returns the maximum number of elements in a chunks.
 func maxChunks(data []int) int {
 	wg.Add(CHUNKS)
 	lenOfSlices := len(data) / CHUNKS
+	shift := len(data) - lenOfSlices*CHUNKS
 	max := math.MinInt
 	arrayOfMax := make([]int, CHUNKS)
 	for i := range CHUNKS {
-		go func(i int, arrayOfMax []int) {
+		left := i * lenOfSlices
+		right := (i+1)*lenOfSlices + shift
+		go func(left int, right int, arrayOfMax []int) {
 			defer wg.Done()
-			max = maximum(data[i*lenOfSlices : (i+1)*lenOfSlices])
+			max = maximum(data[left:right])
 			arrayOfMax[i] = max
-		}(i, arrayOfMax)
+		}(left, right, arrayOfMax)
 	}
 	wg.Wait()
 	return maximum(arrayOfMax)
