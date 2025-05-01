@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"slices"
 	"sync"
@@ -23,7 +22,7 @@ func generateRandomElements(size int) []int {
 	}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	array := make([]int, size)
-	for i, _ := range array {
+	for i := range array {
 		array[i] = int(r.Int63())
 	}
 	return array
@@ -44,15 +43,15 @@ func maxChunks(data []int) int {
 	}
 	wg.Add(CHUNKS)
 	lenOfSlices := len(data) / CHUNKS
-	shift := len(data) - lenOfSlices*CHUNKS
-	max := math.MinInt
+	shift := len(data) % CHUNKS
 	arrayOfMax := make([]int, CHUNKS)
+	right := 0
 	for i := range CHUNKS {
-		left := i * lenOfSlices
-		right := (i+1)*lenOfSlices + shift
+		left := right
+		right = (i+1)*lenOfSlices + shift
 		go func(left int, right int, arrayOfMax []int) {
 			defer wg.Done()
-			max = maximum(data[left:right])
+			max := maximum(data[left:right])
 			arrayOfMax[i] = max
 		}(left, right, arrayOfMax)
 	}
